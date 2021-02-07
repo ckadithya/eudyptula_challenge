@@ -1,17 +1,23 @@
 
+# Eudyptula challenge - task01
 ## Introduction
 Writing a kernel module and a Makefile to print "Hello World!" to the kernel debug log level.
-### Getting Started
-I am using Ubuntu to do this task. I refered [this blog](https://blog.sourcerer.io/writing-a-simple-linux-kernel-module-d9dc3762c234) and https://tldp.org/LDP/lkmpg/2.6/html/c119.html  where I learnt to use the following commands and write the module and Makefile.
-- To get started with the developing environment
-`apt-get install build-essential linux-headers-`uname -r``
+## Getting Started
+I am using Ubuntu to do this task. I refered [Writing a Simple Linux Kernel Module - blog](https://blog.sourcerer.io/writing-a-simple-linux-kernel-module-d9dc3762c234) and [The Linux Kernel Module Programming Guide](https://tldp.org/LDP/lkmpg/2.6/html/c119.html)  where I learnt to use the following commands and write the module and Makefile.
+- To get started with the developing environment, we have to install build-essential and linux-headers
+```
+apt-get install build-essential linux-headers-`uname -r`
+```
 - It installs the essential tools required to buid and run the module.
+
+We are creating a directory for eudyptula challenge - task01
 
 ```
 mkdir -p eudyptula_challenge/task01
 cd eudyptula_challenge/task01
 ```
--I used vim editor to write the following program.
+### Source Code
+- I used vim editor to write the following program.
 ```
 cat eudyptula_challenge.c
 /*
@@ -41,7 +47,7 @@ module_exit(eudyptula_challenge_exit);
 ```
 #### Explanation of the code
 - The include files are essential for including macros, kernel info and modules respectively in the code.
-- The macro's license,author,description and version are added as a good coding practice. The code is licensed GPL so that people can be warned that the code is not open sourced. If the license macro is not included the following warning will be seen when we run make all.
+- If the license macro is not included the following warning will be seen when we run make all.
 ```
 root@ckadithya:/home/adithya/Workspace/eudyptula_challenge/task01# make all
 make -C /lib/modules/5.4.0-050400-generic/build M=/home/adithya/Workspace/eudyptula_challenge/task01 modules
@@ -56,11 +62,14 @@ see include/linux/module.h for more information
 make[1]: Leaving directory '/usr/src/linux-headers-5.4.0-050400-generic'
 
 ```
-
+- So we adde macro license under GPL. The macro's author,description and version are added as a good coding practice and to set module information for `modinfo`
 - The init function for loading and the exit fuction for unloading the module to the kernel are defined as static and returning an int.
 - The printk() is used to communicate infomation with the user, a logging mechanism for the kernel. They come with 8 priority log levels for which the kernel has macros. In our code here we use log level 6 KERN_INFO is used which is used for the informational message about the kernel actions performed.
-- The function call for init and exit functions are given at the end.
+- The function call for `module_init` and `module_exit` functions are given at the end.
 
+### Makefile
+We create following Makefile with 3 targets `all`, `clean`, and `test`.
+```
 cat Makefile
 
 obj-m += eudyptula_challenge.o
@@ -76,9 +85,11 @@ test:
 	sudo insmod eudyptula_challenge.ko
 	sudo rmmod eudyptula_challenge.ko
 	sudo dmesg
-##### Explanation of the Makefile
+```
+#### Explanation of the Makefile
 - The first line tells the kbuild that there is one object in that directory called eudyptula_challenge.o. The `-m` tells that it is a module.
 - The target all builds the module and creates the objects as seen below when we run `make all`. The -c flag tells to change to the directory first.
+- Let us try to run the `make all`
 ```
 root@ckadithya:/home/adithya/Workspace/eudyptula_challenge/task01# make all
 make -C /lib/modules/5.4.0-050400-generic/build M=/home/adithya/Workspace/eudyptula_challenge/task01 modules
@@ -106,8 +117,8 @@ retpoline:      Y
 name:           eudyptula_challenge
 vermagic:       5.4.0-050400-generic SMP mod_unload
 ```
--The target clean tells to get rid of all the objects before created.
--When we run `make clean` it removes all the files generated in the modules directory. `Module.symvers` contains all the exported symbols from the kernel and compiled modules which gets cleaned now.
+- The target clean tells to get rid of all the objects before created.
+- When we run `make clean` it removes all the files generated in the modules directory. `Module.symvers` contains all the exported symbols from the kernel and compiled modules which gets cleaned now.
 
 ```
 root@ckadithya:/home/adithya/Workspace/eudyptula_challenge/task01# make clean
@@ -117,8 +128,8 @@ make[1]: Entering directory '/usr/src/linux-headers-5.4.0-050400-generic'
 make[1]: Leaving directory '/usr/src/linux-headers-5.4.0-050400-generic'
 
 ```
--The target test is added to see the output of the kernel log without running separate commands.
--When we run the command `make test` we get the following.
+- The target test is added to see the output of the kernel log without running separate commands.
+- When we run the command `make test` we get the following.
 
 ```
 # make test
@@ -132,9 +143,9 @@ sudo dmesg
 [33385.189404] Bye, World !
 
 ```
--Here the message tells that the module taints the kernel. Inorder to avoid that message we should include the line `CONFIG_MODULE_SIG=n` at the beginning of the Makefile.
--The CONFIG_MODULE_SIG checks for a valid signature on the module.It is set to 'n' so that module with bad signature is accepted.
--Now when we make test we get the following
+- Here the message tells that the module taints the kernel. Inorder to avoid that message we should include the line `CONFIG_MODULE_SIG=n` at the beginning of the Makefile.
+- The CONFIG_MODULE_SIG checks for a valid signature on the module.It is set to 'n' so that module with bad signature is accepted.
+- Now when we run the command `make test`, we get the following
 
 ```
 root@ckadithya:/home/adithya/Workspace/eudyptula_challenge/task01# make test
@@ -152,7 +163,8 @@ root@ckadithya:/home/adithya/Workspace/eudyptula_challenge/task01#
 -The command `rmmod` removes the compiled module from the kernel.
 -I used `dmesg -c` under the `test` target in the Makefile to clear all the dmesg from the sytem, and only get the dmesg when the eudyptula_challenge.ko module is inserted and removed from the kernel. You can see the `dmesg` show the message `Hello, World !` and `Bye, World !` with different time stamp value.
 - This console output show that the kernel module successfully inserted and remove from the kernel
-###### Conclusion
+
+## Conclusion
 This task helped me workout the skills I learnt from the training LFD103- A Beginners guide to linux kernel development. Through this task I have successfully created my first kernel module.
 
 
