@@ -1,0 +1,46 @@
+From fd373f81f19c730e83b5010f321332229ab9901d Mon Sep 17 00:00:00 2001
+From: Adithya Chandrakasan <adithya.chandrakasan@outlook.com>
+Date: Sat, 13 Feb 2021 11:18:59 -0800
+Subject: [PATCH] adding "-eudyptula" as EXTRAVERSION to Makefile
+To: masahiroy@kernel.org,
+    michal.lkml@markovi.net,
+    ast@kernel.org,
+    daniel@iogearbox.net,
+    andrii@kernel.org,
+    kafai@fb.com,
+    songliubraving@fb.com,
+    yhs@fb.com,
+    john.fastabend@gmail.com,
+    kpsingh@kernel.org,
+    nathan@kernel.org,
+    ndesaulniers@google.com
+Cc: linux-kbuild@vger.kernel.org,
+    linux-kernel@vger.kernel.org,
+    netdev@vger.kernel.org,
+    bpf@vger.kernel.org,
+    clang-built-linux@googlegroups.com
+
+As part of task03 eudyptula challenge added the string
+"-eudyptula" as the EXTRAVERSION
+
+Signed-off-by: Adithya Chandrakasan <adithya.chandrakasan@outlook.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index ade44ac4cc2f..baebafd77465 100644
+--- a/Makefile
++++ b/Makefile
+@@ -2,7 +2,7 @@
+ VERSION = 5
+ PATCHLEVEL = 11
+ SUBLEVEL = 0
+-EXTRAVERSION = -rc7
++EXTRAVERSION = -eudyptula
+ NAME = Kleptomaniac Octopus
+ 
+ # *DOCUMENTATION*
+-- 
+2.25.1
+
