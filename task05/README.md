@@ -9,7 +9,7 @@
 - The following is the source code which I wrote after reading through the chapters 13 and 14 from the book. 
 - I used vim editor to write the program.
 ```
-root@ckadithya:/home/adithya/Workspace/eudyptula_challenge/task05# cat eudyptula_challenge_task05.c 
+root@ckadithya:/home/adithya/Workspace/eudyptula_challenge/task05# cat eudyptula_challenge_task05.c
 // SPDX-License-Identifier: GPL-2.0-only
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -32,50 +32,23 @@ static struct usb_device_id task05_id_table[] = {
 
 MODULE_DEVICE_TABLE(usb, task05_id_table);
 
-static int task05_probe(struct usb_interface *interface,
-			const struct usb_device_id *id)
-{
-	pr_debug("Task05 - USB driver probe function is called\n");
-	return 0;
-}
-
-static void task05_disconnect(struct usb_interface *interface)
-{
-	pr_debug("Task05 - USB driver disconnect function is called\n");
-}
-
-static struct usb_driver task05_driver = { .name = "task05_driver",
-					   .probe = task05_probe,
-					   .disconnect = task05_disconnect,
-					   .id_table = task05_id_table };
-
 static int __init eudyptula_challenge_init(void)
 {
-	int retval = 0;
-
 	pr_debug("Task05 - USB Driver Module loaded successfully!\n");
-	retval = usb_register(&task05_driver);
-	if (retval)
-		pr_debug("Task05 -  USB Driver Module loading unsuccessful %d",
-			 retval);
-
 	return 0;
 }
 
 static void __exit eudyptula_challenge_exit(void)
 {
-	usb_deregister(&task05_driver);
 	pr_debug("Task05 - USB Driver Module unloaded successfully\n");
 }
 
 module_init(eudyptula_challenge_init);
 module_exit(eudyptula_challenge_exit);
-
 root@ckadithya:/home/adithya/Workspace/eudyptula_challenge/task05# 
 ```
 - The header files `<linux/module.h> <linux/kernel.h> <linux/init.h>` are used for including the essential modules, kernel info and macros respectively. We use the <linux/usb.h> <linux/usb/input.h> <linux/hid.h> headers as it has to be included by all USB device drivers where the related functions and structures are available.
 - As a good coding practice we include the module related descriptions and same as from the task01. I used the pr_debug instead of printk from the task04 from the experience of using checkpatch.pl
-- On refering https://elixir.bootlin.com/linux/latest/source/drivers/hid/usbhid/usbkbd.c#L385, https://elixir.bootlin.com/linux/latest/source/drivers/hid/usbhid/hid-core.c#L1650 and reading the usb_register(), usb_deregister() on the book "Linux Device Driver" - Chapter 13 USB Driver subsection - Registering a USB Driver, I got an understanding regarding all the usb_driver function callbacks (probe and disconnect). The probe function is called when a device is connected to the system, and the USB core probe function is registered. The disconnect function is called when device is disconnected to the system, and the USB core disconnect call back function is called to handle disconnection and the clean up. I require the probe and disconnect function to fulfill the requirement to call proble(), when usb keyboard is connected and disconnect() is when usb keyboard is removed from the laptop.
 - I also checked the coding style with the checkpatch.pl
 
 #### Makefile Explained
@@ -147,29 +120,25 @@ I have attached three logs
 - eudyptula_challenge_task05_dmesg_unloaded - dmesg before the usb keyboard connected
 - eudyptula_challenge_task05_dmesg_usb_connected - dmesg after the usb keyboard connected
 ```
-[ 5103.514350] usb 1-3: new low-speed USB device number 4 using xhci_hcd
-[ 5103.679749] usb 1-3: New USB device found, idVendor=03f0, idProduct=0024, bcdDevice= 1.30
-[ 5103.679772] usb 1-3: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-[ 5103.679782] usb 1-3: Product: HP Basic USB Keyboard
-[ 5103.679789] usb 1-3: Manufacturer: CHICONY
-[ 5103.812835] eudyptula_challenge_task05: loading out-of-tree module taints kernel.
-[ 5103.813089] Task05 - USB Driver Module loaded successfully!
-[ 5103.813118] Task05 - USB driver probe function is called
-[ 5103.813888] usbcore: registered new interface driver task05_driver
+[  448.850299] usb 1-1: new low-speed USB device number 4 using xhci_hcd
+[  449.016054] usb 1-1: New USB device found, idVendor=03f0, idProduct=0024, bcdDevice= 1.30
+[  449.016075] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[  449.016085] usb 1-1: Product: HP Basic USB Keyboard
+[  449.016093] usb 1-1: Manufacturer: CHICONY
+[  449.110092] eudyptula_challenge_task05: loading out-of-tree module taints kernel.
+[  449.110286] Task05 - USB Driver Module loaded successfully!
+
 ```
 - eudyptula_challenge_task05_dmesg_usb_disconnected - dmesg after the usb keyboard disconnected
 ```
-[ 5103.514350] usb 1-3: new low-speed USB device number 4 using xhci_hcd
-[ 5103.679749] usb 1-3: New USB device found, idVendor=03f0, idProduct=0024, bcdDevice= 1.30
-[ 5103.679772] usb 1-3: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-[ 5103.679782] usb 1-3: Product: HP Basic USB Keyboard
-[ 5103.679789] usb 1-3: Manufacturer: CHICONY
-[ 5103.812835] eudyptula_challenge_task05: loading out-of-tree module taints kernel.
-[ 5103.813089] Task05 - USB Driver Module loaded successfully!
-[ 5103.813118] Task05 - USB driver probe function is called
-[ 5103.813888] usbcore: registered new interface driver task05_driver
-[ 5221.517294] usb 1-3: USB disconnect, device number 4
-[ 5221.517446] Task05 - USB driver disconnect function is called
+[  448.850299] usb 1-1: new low-speed USB device number 4 using xhci_hcd
+[  449.016054] usb 1-1: New USB device found, idVendor=03f0, idProduct=0024, bcdDevice= 1.30
+[  449.016075] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[  449.016085] usb 1-1: Product: HP Basic USB Keyboard
+[  449.016093] usb 1-1: Manufacturer: CHICONY
+[  449.110092] eudyptula_challenge_task05: loading out-of-tree module taints kernel.
+[  449.110286] Task05 - USB Driver Module loaded successfully!
+[  613.635276] usb 1-1: USB disconnect, device number 4
 ```
 
 ##### Conclusion
