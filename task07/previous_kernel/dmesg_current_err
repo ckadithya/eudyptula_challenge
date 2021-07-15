@@ -1,0 +1,3 @@
+platform MSFT0101:00: failed to claim resource 1: [mem 0xfed40000-0xfed40fff]
+acpi MSFT0101:00: platform device creation failed: -16
+integrity: Problem loading X.509 certificate -65

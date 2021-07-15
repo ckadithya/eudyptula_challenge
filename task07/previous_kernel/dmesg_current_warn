@@ -1,0 +1,26 @@
+[Firmware Bug]: TPM Final Events table missing or invalid
+MDS CPU bug present and SMT on, data leak possible. See https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/mds.html for more details.
+ #3
+tpm_crb MSFT0101:00: [Firmware Bug]: Bad ACPI memory layout
+usb: port power management may be unreliable
+i8042: PNP: PS/2 appears to have AUX port disabled, if this is incorrect please boot with i8042.nopnp
+platform eisa.0: EISA: Cannot allocate resource for mainboard
+platform eisa.0: Cannot allocate resource for EISA slot 1
+platform eisa.0: Cannot allocate resource for EISA slot 2
+platform eisa.0: Cannot allocate resource for EISA slot 3
+platform eisa.0: Cannot allocate resource for EISA slot 4
+platform eisa.0: Cannot allocate resource for EISA slot 5
+platform eisa.0: Cannot allocate resource for EISA slot 6
+platform eisa.0: Cannot allocate resource for EISA slot 7
+platform eisa.0: Cannot allocate resource for EISA slot 8
+r8169 0000:01:00.0: can't disable ASPM; OS doesn't have ASPM control
+i2c_hid i2c-SYNA2B33:00: supply vdd not found, using dummy regulator
+i2c_hid i2c-SYNA2B33:00: supply vddl not found, using dummy regulator
+kauditd_printk_skb: 29 callbacks suppressed
+Started bpfilter
+process 'docker/tmp/qemu-check042810101/check' started with executable stack
+IRQ 135: no longer affine to CPU1
+IRQ 134: no longer affine to CPU2
+IRQ 122: no longer affine to CPU3
+IRQ 124: no longer affine to CPU3
+[Firmware Bug]: TSC ADJUST differs: CPU0 0 --> -369676352. Restoring
